@@ -18,6 +18,16 @@ class Interactive(ABC):
         pass
 
 
+class AbstractObject(ABC):
+
+    @abstractmethod
+    def __init__(self):
+        pass
+
+    def draw(self, display):
+        pass
+
+
 class Ally(AbstractObject, Interactive):
 
     def __init__(self, icon, action, position):
@@ -40,6 +50,16 @@ class Creature(AbstractObject):
 
     def calc_max_HP(self):
         self.max_hp = 5 + self.stats["endurance"] * 2
+
+
+class Enemy(Creature, Interactive):
+
+    def __init__(self, icon, stats, xp, position):
+        self.xp = xp
+        super().__init__(icon, stats, position)
+
+    def interact(self, engine, hero):
+        self.action(engine, hero)
 
 
 class Hero(Creature):
@@ -123,6 +143,33 @@ class Effect(Hero):
     @abstractmethod
     def apply_effect(self):
         pass
+
+
+class Berserk(Effect):
+    def apply_effect(self):
+        for x in ["strength", "endurance", "luck"]:
+            self.stats[x] += 7
+
+        for x in ["intelligence"]:
+            self.stats[x] -= 3
+
+        self.hp(self.hp + 50)
+        return self
+
+
+class Blessing(Effect):
+    def apply_effect(self):
+        for x in ["strength", "endurance", "intelligence",  "luck"]:
+            self.stats[x] += 2
+        return self
+
+
+class Weakness(Effect):
+    def apply_effect(self):
+        for x in ["strength", "endurance"]:
+            self.stats[x] -= 4
+        return self
+
 
 
 # FIXME

@@ -30,11 +30,14 @@ class ScreenHandle(pygame.Surface):
             self.successor.draw(canvas)
 
     # FIXME connect_engine
+    def connect_engine(self, engine):
+        pass
 
 
 class GameSurface(ScreenHandle):
 
     def connect_engine(self, engine):
+        pass
         # FIXME save engine and send it to next in chain
 
     def draw_hero(self):
@@ -92,6 +95,7 @@ class ProgressBar(ScreenHandle):
         self.fill(colors["wooden"])
 
     def connect_engine(self, engine):
+        pass
         # FIXME save engine and send it to next in chain
 
     def draw(self, canvas):
@@ -173,6 +177,7 @@ class InfoWindow(ScreenHandle):
     # draw next surface in chain
 
     def connect_engine(self, engine):
+        pass
         # FIXME set this class as Observer to engine and send it to next in
         # chain
 
@@ -195,6 +200,7 @@ class HelpWindow(ScreenHandle):
     # FIXME You can add some help information
 
     def connect_engine(self, engine):
+        pass
         # FIXME save engine and send it to next in chain
 
     def draw(self, canvas):
