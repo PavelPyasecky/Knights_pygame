@@ -169,8 +169,3 @@ class Weakness(Effect):
         for x in ["strength", "endurance"]:
             self.stats[x] -= 4
         return self
-
-
-
-# FIXME
-# add classes
