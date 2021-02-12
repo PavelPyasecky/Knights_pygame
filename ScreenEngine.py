@@ -47,9 +47,10 @@ class GameSurface(ScreenHandle):
     def draw_map(self):
 
         # FIXME || calculate (min_x,min_y) - left top corner
+        hero_x, hero_y = self.game_engine.hero.position
 
-        min_x = 0
-        min_y = 0
+        min_x = hero_x
+        min_y = hero_y
 
     ##
 
@@ -86,7 +87,7 @@ class GameSurface(ScreenHandle):
                                       (obj.position[1] - min_y) * self.game_engine.sprite_size))
         self.draw_hero()
 
-        super().draw(self, canvas)
+        super().draw(canvas)
 
 
 class ProgressBar(ScreenHandle):
@@ -151,7 +152,7 @@ class ProgressBar(ScreenHandle):
         self.blit(font.render(f'{self.engine.score:.4f}', True, colors["black"]),
                   (550, 70))
 
-        super().draw(self, canvas)
+        super().draw(canvas)
 
 
 class InfoWindow(ScreenHandle):
@@ -174,7 +175,7 @@ class InfoWindow(ScreenHandle):
             self.blit(font.render(text, True, colors["black"]),
                       (5, 20 + 18 * i))
 
-        super().draw(self, canvas)
+        super().draw(canvas)
 
     def connect_engine(self, engine):
         self.engine = engine
@@ -221,4 +222,4 @@ class HelpWindow(ScreenHandle):
                 self.blit(font2.render(text[1], True, ((128, 128, 255))),
                           (150, 50 + 30 * i))
 
-        super().draw(self, canvas)
+        super().draw(canvas)
