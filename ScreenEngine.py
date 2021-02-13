@@ -42,15 +42,20 @@ class GameSurface(ScreenHandle):
         super().connect_engine(engine)
 
     def draw_hero(self):
-        self.game_engine.hero.draw(self)
+        hero = self.game_engine.hero
+        size = self.game_engine.sprite_size
+        center_x = len(self.game_engine.map[0]) / 2
+        center_y = len(self.game_engine.map) / 2
+        self.blit(hero.sprite, (hero.position[0]*size, hero.position[1]*size))
 
     def draw_map(self):
 
         # FIXME || calculate (min_x,min_y) - left top corner
         hero_x, hero_y = self.game_engine.hero.position
+        size = self.game_engine.sprite_size
 
-        min_x = hero_x
-        min_y = hero_y
+        min_x = 0
+        min_y = 0
 
     ##
 
@@ -64,6 +69,8 @@ class GameSurface(ScreenHandle):
 
     def draw_object(self, sprite, coord):
         size = self.game_engine.sprite_size
+        hero_x, hero_y = self.game_engine.hero.position
+
     # FIXME || calculate (min_x,min_y) - left top corner
 
         min_x = 0
@@ -75,6 +82,7 @@ class GameSurface(ScreenHandle):
 
     def draw(self, canvas):
         size = self.game_engine.sprite_size
+        hero_x, hero_y = self.game_engine.hero.position
     # FIXME || calculate (min_x,min_y) - left top corner
 
         min_x = 0
