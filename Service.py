@@ -76,9 +76,7 @@ class MapFactory(yaml.YAMLObject):
 
     @classmethod
     def from_yaml(cls, loader, node):
-        print(type(cls))
         data = loader.construct_mapping(node)
-        print(data)
         _map = cls.Map()
         _obj = cls.Objects()
         return {'map': _map, 'obj': _obj}

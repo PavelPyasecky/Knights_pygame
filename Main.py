@@ -18,7 +18,7 @@ if not KEYBOARD_CONTROL:
     answer = np.zeros(4, dtype=float)
 
 base_stats = {
-    "strength": 20,
+    "strength": 10,
     "endurance": 20,
     "intelligence": 5,
     "luck": 5
@@ -28,6 +28,7 @@ base_stats = {
 def create_game(sprite_size, is_new):
     global hero, engine, drawer, iteration
     if is_new:
+        print(pygame.K_r)
         hero = Objects.Hero(base_stats, Service.create_sprite(
             os.path.join("texture", "Hero.png"), sprite_size))
         engine = Logic.GameEngine()
@@ -45,7 +46,9 @@ def create_game(sprite_size, is_new):
         engine.sprite_size = sprite_size
         hero.sprite = Service.create_sprite(
             os.path.join("texture", "Hero.png"), sprite_size)
+
         Service.service_init(sprite_size, False)
+        Service.reload_game(engine, hero)
 
     Logic.GameEngine.sprite_size = sprite_size
 

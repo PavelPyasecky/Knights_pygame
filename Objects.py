@@ -59,7 +59,20 @@ class Enemy(Creature, Interactive):
         super().__init__(icon, stats, position)
 
     def interact(self, engine, hero):
-        self.action(engine, hero)
+        hero.hp -= self.stats['strength']
+
+        if hero.hp < 1:
+            hero.hp = 0
+            engine.notify("Your Hero was killed!")
+            engine.notify("GAME OVER!")
+            engine.game_process = False
+            return
+
+        hero.exp += self.stats['experience']
+        hero.stats['luck'] += self.stats['luck']
+
+        for i in hero.level_up():
+            engine.notify(i)
 
 
 class Hero(Creature):
@@ -73,12 +86,11 @@ class Hero(Creature):
 
     def level_up(self):
         while self.exp >= 100 * (2 ** (self.level - 1)):
-            yield "level up!"
             self.level += 1
             self.stats["strength"] += 2
             self.stats["endurance"] += 2
             self.calc_max_HP()
-            self.hp = self.max_hp
+            yield "level up!"
 
 
 class Effect(Hero):
@@ -153,7 +165,9 @@ class Berserk(Effect):
         for x in ["intelligence"]:
             self.stats[x] -= 3
 
-        self.hp(self.hp + 50)
+        self.hp = self.hp + 50
+        if self.hp > self.max_hp:
+            self.hp = self.max_hp
         return self
 
 

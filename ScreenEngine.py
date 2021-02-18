@@ -43,56 +43,71 @@ class GameSurface(ScreenHandle):
 
     def draw_hero(self):
         hero = self.game_engine.hero
-        size = self.game_engine.sprite_size
-        center_x = len(self.game_engine.map[0]) / 2
-        center_y = len(self.game_engine.map) / 2
-        self.blit(hero.sprite, (hero.position[0]*size, hero.position[1]*size))
-
-    def draw_map(self):
-
-        # FIXME || calculate (min_x,min_y) - left top corner
         hero_x, hero_y = self.game_engine.hero.position
         size = self.game_engine.sprite_size
+        square_x = 640 // (2 * size)
+        square_y = 480 // (2 * size)
+        if hero_x <= square_x and hero_y <= square_y:
+            self.blit(hero.sprite, (hero_x * size, hero_y * size))
+        elif hero_x <= square_x:
+            self.blit(hero.sprite, (hero_x * size, square_y * size))
+        elif hero_y <= square_y:
+            self.blit(hero.sprite, (square_x * size, hero_y * size))
+        else:
+            self.blit(hero.sprite, (square_x * size, square_y * size))
 
-        min_x = 0
-        min_y = 0
+    def draw_map(self):
+        size = self.game_engine.sprite_size
+        square_x = 640 // (2 * size)
+        square_y = 480 // (2 * size)
+        hero_x, hero_y = self.game_engine.hero.position
+        if hero_x > square_x:
+            min_x = hero_x - square_x
+        else:
+            min_x = 0
 
-    ##
+        if hero_y > square_y:
+            min_y = hero_y - square_y
+        else:
+            min_y = 0
 
         if self.game_engine.map:
             for i in range(len(self.game_engine.map[0]) - min_x):
                 for j in range(len(self.game_engine.map) - min_y):
                     self.blit(self.game_engine.map[min_y + j][min_x + i][
-                              0], (i * self.game_engine.sprite_size, j * self.game_engine.sprite_size))
+                              0], (i * size, j * size))
         else:
             self.fill(colors["white"])
 
     def draw_object(self, sprite, coord):
         size = self.game_engine.sprite_size
-        hero_x, hero_y = self.game_engine.hero.position
 
-    # FIXME || calculate (min_x,min_y) - left top corner
-
-        min_x = 0
         min_y = 0
+        min_x = 0
 
-    ##
-        self.blit(sprite, ((coord[0] - min_x) * self.game_engine.sprite_size,
-                           (coord[1] - min_y) * self.game_engine.sprite_size))
+        self.blit(sprite, ((coord[0] - min_x) * size,
+                           (coord[1] - min_y) * size))
 
     def draw(self, canvas):
         size = self.game_engine.sprite_size
         hero_x, hero_y = self.game_engine.hero.position
-    # FIXME || calculate (min_x,min_y) - left top corner
+        square_x = 640 // (2 * size)
+        square_y = 480 // (2 * size)
 
-        min_x = 0
-        min_y = 0
+        if hero_x > square_x:
+            min_x = hero_x - square_x
+        else:
+            min_x = 0
 
-    ##
+        if hero_y > square_y:
+            min_y = hero_y - square_y
+        else:
+            min_y = 0
+
         self.draw_map()
         for obj in self.game_engine.objects:
-            self.blit(obj.sprite[0], ((obj.position[0] - min_x) * self.game_engine.sprite_size,
-                                      (obj.position[1] - min_y) * self.game_engine.sprite_size))
+            self.blit(obj.sprite[0], ((obj.position[0] - min_x) * size,
+                                      (obj.position[1] - min_y) * size))
         self.draw_hero()
 
         super().draw(canvas)
@@ -110,13 +125,13 @@ class ProgressBar(ScreenHandle):
 
     def draw(self, canvas):
         self.fill(colors["wooden"])
-        pygame.draw.rect(self, colors["black"], (50, 30, 200, 30), 2)
-        pygame.draw.rect(self, colors["black"], (50, 70, 200, 30), 2)
+        pygame.draw.rect(self, colors["black"], (48, 28, 203, 33), 2)
+        pygame.draw.rect(self, colors["black"], (48, 68, 203, 33), 2)
 
-        pygame.draw.rect(self, colors[
-                         "red"], (50, 30, 200 * self.engine.hero.hp / self.engine.hero.max_hp, 30))
-        pygame.draw.rect(self, colors["green"], (50, 70,
-                                                 200 * self.engine.hero.exp / (100 * (2**(self.engine.hero.level - 1))), 30))
+        pygame.draw.rect(self, colors["red"],
+                         (50, 30, 200 * self.engine.hero.hp / self.engine.hero.max_hp, 30))
+        pygame.draw.rect(self, colors["green"],
+                         (50, 70, 200 * self.engine.hero.exp / (100 * (2**(self.engine.hero.level - 1))), 30))
 
         font = pygame.font.SysFont("comicsansms", 20)
         self.blit(font.render(f'Hero at {self.engine.hero.position}', True, colors["black"]),
@@ -167,7 +182,7 @@ class InfoWindow(ScreenHandle):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.len = 30
+        self.len = 13
         clear = []
         self.data = collections.deque(clear, maxlen=self.len)
 
@@ -178,7 +193,7 @@ class InfoWindow(ScreenHandle):
         self.fill(colors["wooden"])
         size = self.get_size()
 
-        font = pygame.font.SysFont("comicsansms", 10)
+        font = pygame.font.SysFont("comicsansms", 20)
         for i, text in enumerate(self.data):
             self.blit(font.render(text, True, colors["black"]),
                       (5, 20 + 18 * i))
@@ -207,7 +222,6 @@ class HelpWindow(ScreenHandle):
         self.data.append(["Num+", "Zoom +"])
         self.data.append(["Num-", "Zoom -"])
         self.data.append([" R ", "Restart Game"])
-    # FIXME You can add some help information
 
     def connect_engine(self, engine):
         self.engine = engine
